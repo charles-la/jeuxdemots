@@ -75,9 +75,9 @@ def trouver_voisins(chaine,relation,id,deduction):
                     quatriemes_elements.append((int(elements[3]), int(elements[7]),deduction))
             if((int(elements[4]) == relation) and len(elements)!=8):
                 if(int(elements[3]) == id): # Relation Entrante
-                    quatriemes_elements.append((int(elements[2]), None,deduction))
+                    quatriemes_elements.append((int(elements[2]),None,deduction))
                 if(int(elements[2]) == id): # Relation Sortante
-                    quatriemes_elements.append((int(elements[3]), None,deduction))
+                    quatriemes_elements.append((int(elements[3]),None,deduction))
 
     return quatriemes_elements
 

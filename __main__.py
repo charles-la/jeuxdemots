@@ -14,20 +14,20 @@ def main(arg):
     print(separation_label)
     print(f'Voici vos arguments : {arg}')
     print(separation_label)
-
-    # Enregistrer le temps de début
-    start_time = time.time()
     
     if len(sys.argv) >= 4:
-        print(separation_label)
-        # remove_all_files_in_folder('output/')
-        # a_dumb_txt = recup_fichier_jdm(arg[1])
-        # b_dumb_txt = recup_fichier_jdm(arg[3])
+        remove_all_files_in_folder('output/')
+        a_dumb_txt = recup_fichier_jdm(arg[1])
+        b_dumb_txt = recup_fichier_jdm(arg[3])
 
-        with open('output/piston.txt', 'r') as file:
-            a_dumb_txt = file.read()
-        with open('output/voiture.txt', 'r') as file:
-            b_dumb_txt = file.read()
+        
+        # Enregistrer le temps de début
+        start_time = time.time()
+
+        # with open('output/piston.txt', 'r') as file:
+        #     a_dumb_txt = file.read()
+        # with open('output/voiture.txt', 'r') as file:
+        #     b_dumb_txt = file.read()
 
         # Extraction du premier mot
         a_code_txt = extraire_elements(a_dumb_txt,"<CODE>","</CODE>")
@@ -36,8 +36,6 @@ def main(arg):
 
         write_to_file(a_dumb_txt,f'{arg[1]}.txt')
         write_to_file(a_code_txt,f'{arg[1]}_code.txt')
-
-        print(separation_label)
 
         # Extraction du deuxieme mot
         b_code_txt = extraire_elements(b_dumb_txt,"<CODE>","</CODE>")
@@ -68,31 +66,29 @@ def main(arg):
         # Trier les triplets en fonction du deuxième élément
         c_voisins_transitivite_tries = sorted(filter(lambda x: x[1] != 0, c_voisins_transitivite), key=lambda x: x[1])
 
+        c_id = None
         # Sélectionner le deuxième triplet de la liste triée
-        c_voisins_transitive_important = c_voisins_transitivite_tries[0]
+        if c_voisins_transitivite_tries != None:
+            c_voisins_transitive_important = c_voisins_transitivite_tries[0]
+            c_id = c_voisins_transitive_important[0]
 
-
-
+        print('Transitivity')
+        print(c_voisins_transitivite)
+        print(c_voisins_transitive_important)
 
         ## INDUCTION
-        
+        print('Induction')
 
 
 
         ## DEDUCTION
+        print('Deduction')
 
 
 
-
-        print('Transitivity')
-        print(c_voisins_transitivite)
         print(separation_label)
-        print(c_voisins_transitive_important)
-
-
         # Affichage des resultats
         print('Resultat')
-        c_id = c_voisins_transitive_important[0]
         if(c_id != None):
             c_name = trouver_nom(a_code_txt,c_id)
             # if(transitif)
