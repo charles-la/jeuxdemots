@@ -2,6 +2,7 @@ import sys
 import re
 import requests
 import os
+import numpy as np
 
 def recup_fichier_jdm(terme):
 
@@ -55,7 +56,7 @@ def extraire_elements(text,debut,fin):
         return "marker fin pas trouve"
 
 
-def trouver_voisins(chaine,relation,id):
+def trouver_voisins(chaine,relation,id,deduction):
     
     # Séparer la chaîne en lignes
     lignes = chaine.split('\n')
@@ -68,17 +69,33 @@ def trouver_voisins(chaine,relation,id):
         if ligne.startswith("r;"):
             elements = ligne.strip().split(';')
             if((int(elements[4]) == relation) and len(elements)==8):
-                if(int(elements[3]) == id):
-                    quatriemes_elements.append((int(elements[2]), int(elements[7])))
-                if(int(elements[2]) == id):
-                    quatriemes_elements.append((int(elements[3]), int(elements[7])))
+                if(int(elements[3]) == id): # Relation Entrante
+                    quatriemes_elements.append((int(elements[2]), int(elements[7]),deduction))
+                if(int(elements[2]) == id): # Relation Sortante
+                    quatriemes_elements.append((int(elements[3]), int(elements[7]),deduction))
             if((int(elements[4]) == relation) and len(elements)!=8):
-                if(int(elements[3]) == id):
-                    quatriemes_elements.append((int(elements[2]), None))
-                if(int(elements[2]) == id):
-                    quatriemes_elements.append((int(elements[3]), None))
+                if(int(elements[3]) == id): # Relation Entrante
+                    quatriemes_elements.append((int(elements[2]), None,deduction))
+                if(int(elements[2]) == id): # Relation Sortante
+                    quatriemes_elements.append((int(elements[3]), None,deduction))
 
     return quatriemes_elements
+
+def trouver_nom(chaine, eid):
+
+    # Séparer la chaîne en lignes
+    lignes = chaine.split('\n')
+
+    name = ''
+
+    for ligne in lignes:
+        if ligne.startswith("e;"):
+            elements = ligne.strip().split(';')
+            if int(elements[1]) == eid:
+               name = elements[2]
+
+    return name
+
 
 def trouver_nombres_communs(liste1, liste2):
     # Initialiser une liste pour stocker les nombres communs
@@ -86,42 +103,11 @@ def trouver_nombres_communs(liste1, liste2):
 
     # Parcourir les tuples de la première liste
     for tuple1 in liste1:
-        # Extraire le premier élément du tuple
-        nombre = tuple1[0]
-
         # Vérifier si le nombre est présent dans les tuples de la deuxième liste
         for tuple2 in liste2:
-            if nombre == tuple2[0]:
-                tuples_associes.append(tuple2)
+            if tuple1[0] == tuple2[0]:
+                poids = np.sqrt((tuple1[1] if tuple1[1] is not None else 0)**2 + 
+                                (tuple2[1] if tuple2[1] is not None else 0)**2)
+                tuples_associes.append((tuple1[0],poids,tuple1[2]))
 
     return tuples_associes
-
-
-# def trouver_nombres_communs(liste1, liste2):
-#     # Initialiser une liste pour stocker les nombres communs
-#     nombres_communs = []
-
-#     # Parcourir les éléments de la première liste
-#     for nombre in liste1:
-#         # Vérifier si le nombre est présent dans la deuxième liste et s'il n'a pas déjà été ajouté
-#         if nombre in liste2 and nombre not in nombres_communs:
-#             nombres_communs.append(nombre)
-
-#     return nombres_communs
-
-
-# def trouver_nombres_avant_pattern(chaine, pattern):
-
-#     # Séparer la chaîne en lignes
-#     lignes = chaine.split('\n')
-
-#     # Initialiser la liste pour stocker les nombres trouvés
-#     nombres = []
-
-#     # Parcourir chaque ligne et rechercher le motif
-#     for ligne in lignes:
-#         if ligne.startswith("r"):
-#             matches = re.findall(r'(\d+)' + re.escape(pattern), ligne)
-#             nombres.extend([int(match) for match in matches])
-
-#     return nombres
