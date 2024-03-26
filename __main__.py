@@ -6,8 +6,8 @@ import time
 from dictionnary import *
 from functions import * 
 
-
 separation_label = "----------------------------------------------------------------------------------------------------------"
+erreur_label = "-----> ERREUR ----->"
 
 def main(arg):
 
@@ -20,7 +20,6 @@ def main(arg):
         a_dumb_txt = recup_fichier_jdm(arg[1])
         b_dumb_txt = recup_fichier_jdm(arg[3])
 
-        
         # Enregistrer le temps de début
         start_time = time.time()
 
@@ -53,46 +52,71 @@ def main(arg):
         print(f'{arg[3]} eid is : {b_id}')
 
         # Convertir le nom de la relation en nombre pour utiliser les relations de jeu de mots
-        num_relation = tableau_correspondance_relation[arg[2]]
-        print(f'{arg[2]} est la relation : {num_relation}')
+        if arg[2] in tableau_correspondance_relation:
+            num_relation = tableau_correspondance_relation[arg[2]]
+            print(f'{arg[2]} est la relation : {num_relation}')
+        else:
+            print(erreur_label +" La relation entrée n'existe pas")
+            exit()
+
         print(separation_label)
 
         ## TRANSITIVITE
-        a_voisins_transitivite = trouver_voisins(a_code_txt,num_relation,a_id,'Transitivity')
-        b_voisins_transitivite = trouver_voisins(b_code_txt,num_relation,b_id,'Transitivity')   
-        c_voisins_transitivite = trouver_nombres_communs(a_voisins_transitivite,b_voisins_transitivite)
-
-        #### DEBUG ####
-        # Trier les triplets en fonction du deuxième élément
-        c_voisins_transitivite_tries = sorted(filter(lambda x: x[1] != 0, c_voisins_transitivite), key=lambda x: x[1])
-
-        c_id = None
-        # Sélectionner le deuxième triplet de la liste triée
-        if c_voisins_transitivite_tries != None:
-            c_voisins_transitive_important = c_voisins_transitivite_tries[0]
-            c_id = c_voisins_transitive_important[0]
-
         print('Transitivity')
-        print(c_voisins_transitivite)
-        print(c_voisins_transitive_important)
+        # si la relation est r-agent-1, on ne regarde pas la transitivite
+        if(num_relation != 24):
+
+            a_voisins = trouver_voisins(a_code_txt,num_relation,a_id,'Transitivity','es')
+            b_voisins = trouver_voisins(b_code_txt,num_relation,b_id,'Transitivity','es')   
+            c_voisins = trouver_voisins_communs(a_voisins,b_voisins)
+            c_voisins_important = trouver_voisin_important(c_voisins)
+
+            print(c_voisins)
+            print(c_voisins_important)
+        
+        print(separation_label)
 
         ## INDUCTION
         print('Induction')
+        # si la relation est r-agent-1, on ne regarde pas la transitivite
+        if(num_relation == 24):
+            # changer la relation ici
+            a_voisins = trouver_voisins(a_code_txt,8,a_id,'Induction','s')
+            b_voisins = trouver_voisins(b_code_txt,num_relation,b_id,'Induction','e')   
+            c_voisins = trouver_voisins_communs(a_voisins,b_voisins)
+            c_voisins_important = trouver_voisin_important(c_voisins)
 
-
+            print(c_voisins)
+            print(c_voisins_important)
+        
+        print(separation_label)
 
         ## DEDUCTION
         print('Deduction')
+        if(num_relation == 24):
+            # le numero de la relation r_isa = 6
+            a_voisins = trouver_voisins(a_code_txt,6,a_id,'Deduction','s')
+            b_voisins = trouver_voisins(b_code_txt,num_relation,b_id,'Deduction','e')   
+            c_voisins = trouver_voisins_communs(a_voisins,b_voisins)
+            c_voisins_important = trouver_voisin_important(c_voisins)
 
-
-
+            print(c_voisins)
+            print(c_voisins_important)
+        
         print(separation_label)
+        
         # Affichage des resultats
         print('Resultat')
-        if(c_id != None):
-            c_name = trouver_nom(a_code_txt,c_id)
-            # if(transitif)
-            print(f'\'{arg[1]}\' {arg[2]} \'{arg[3]}\' --> oui, car \'{arg[1]}\' {arg[2]} {c_name} et \'{arg[3]}\' {arg[2]} {c_name}')
+        if(c_voisins_important != None):
+            c_name = trouver_nom(a_code_txt,c_voisins_important[0])
+            if(c_voisins_important[2]=='Transitivity'):
+                print('On a ici une relation de transitivite')
+                print(f'\'{arg[1]}\' {arg[2]} \'{arg[3]}\' --> oui, car \'{arg[1]}\' {arg[2]} {c_name} et \'{arg[3]}\' {arg[2]} {c_name}')
+            if(c_voisins_important[2]=='Deduction'):
+                print('On a ici une relation de deduction')
+                print(f'\'{arg[1]}\' {arg[2]} \'{arg[3]}\' --> oui, car \'{arg[1]}\' r_isa {c_name} et \'{arg[3]}\' r_agent_1 {c_name}')        
+            if(c_voisins_important[2]=='Induction'):
+                print('On a ici une relation d\'induction')
         else:
             print(f'\'{arg[1]}\' {arg[2]} \'{arg[3]}\' --> non')
         print(separation_label)
@@ -107,8 +131,6 @@ def main(arg):
 
 if __name__ == "__main__":
     main(sys.argv)
-
-
 
 
 

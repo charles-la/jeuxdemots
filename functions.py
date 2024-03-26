@@ -55,8 +55,12 @@ def extraire_elements(text,debut,fin):
     else:
         return "marker fin pas trouve"
 
-
-def trouver_voisins(chaine,relation,id,deduction):
+# chaine = dumb.txt
+# relation = r_isa, ... , 
+# id = nodeId
+# deduction = (transitivity, induction, deduction)
+# sens = e (entrant), s (sortant), es (entrant et sortant)
+def trouver_voisins(chaine,relation,id,deduction,sens):
     
     # Séparer la chaîne en lignes
     lignes = chaine.split('\n')
@@ -68,15 +72,17 @@ def trouver_voisins(chaine,relation,id,deduction):
     for ligne in lignes:
         if ligne.startswith("r;"):
             elements = ligne.strip().split(';')
+
             if((int(elements[4]) == relation) and len(elements)==8):
-                if(int(elements[3]) == id): # Relation Entrante
+                if(int(elements[3]) == id and (sens == 'e' or sens == 'es')): # Relation Entrante
                     quatriemes_elements.append((int(elements[2]), int(elements[7]),deduction))
-                if(int(elements[2]) == id): # Relation Sortante
+                if(int(elements[2]) == id and (sens == 's' or sens == 'es')): # Relation Sortante
                     quatriemes_elements.append((int(elements[3]), int(elements[7]),deduction))
+
             if((int(elements[4]) == relation) and len(elements)!=8):
-                if(int(elements[3]) == id): # Relation Entrante
+                if(int(elements[3]) == id and (sens == 'e' or sens == 'es')): # Relation Entrante
                     quatriemes_elements.append((int(elements[2]),None,deduction))
-                if(int(elements[2]) == id): # Relation Sortante
+                if(int(elements[2]) == id and (sens == 's' or sens == 'es')): # Relation Sortante
                     quatriemes_elements.append((int(elements[3]),None,deduction))
 
     return quatriemes_elements
@@ -97,7 +103,7 @@ def trouver_nom(chaine, eid):
     return name
 
 
-def trouver_nombres_communs(liste1, liste2):
+def trouver_voisins_communs(liste1, liste2):
     # Initialiser une liste pour stocker les nombres communs
     tuples_associes = []
 
@@ -111,3 +117,15 @@ def trouver_nombres_communs(liste1, liste2):
                 tuples_associes.append((tuple1[0],poids,tuple1[2]))
 
     return tuples_associes
+
+
+def trouver_voisin_important(c_voisins):
+    # Trier les triplets en fonction du deuxième élément
+    c_voisins_tries = sorted(filter(lambda x: x[1] != 0, c_voisins), key=lambda x: x[1])
+    c_voisins_important = None
+    
+    # Sélectionner le deuxième triplet de la liste triée
+    if len(c_voisins_tries) != 0:
+        c_voisins_important = c_voisins_tries[0]
+    
+    return c_voisins_important

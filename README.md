@@ -27,7 +27,10 @@ Jeuxdemots
 
 - Comment calculer le poid : De chaque inférence
 
-- 
+- R_agent_1 on ne regarde pas la transitivité ?
+
+- Quel relation pour la transitivite
+- R_agent_1 -- deduction et induction
 
 
 
