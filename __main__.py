@@ -2,6 +2,7 @@ import sys
 import re
 import requests
 import time
+import os
 
 from dictionnary import *
 from functions import * 
@@ -16,33 +17,38 @@ def main(arg):
     print(separation_label)
     
     if len(sys.argv) >= 4:
-        # remove_all_files_in_folder('output/')
-        # a_dumb_txt = recup_fichier_jdm(arg[1])
-        # b_dumb_txt = recup_fichier_jdm(arg[3])
+        # remove_all_files_in_folder('output/') #### Supprimer cache
+        chemin_arg1 = f"output/{arg[1]}.txt"
+        chemin_arg3 = f"output/{arg[3]}.txt"
+
+        if os.path.exists(chemin_arg1):
+            print(f"Le fichier {arg[1]}.txt existe.")
+            with open(chemin_arg1, 'r') as file:
+                a_code_txt = file.read()
+        else:
+            print("Le fichier n'existe pas.")
+            a_dumb_txt = recup_fichier_jdm(arg[1])
+
+            # Extraction du premier mot
+            a_code_txt = extraire_elements(a_dumb_txt,"<CODE>","</CODE>")
+            write_to_file(a_code_txt,f'{arg[1]}.txt')
+
+
+        if os.path.exists(chemin_arg3):
+            print(f"Le fichier {arg[3]}.txt existe.")
+            with open(chemin_arg3, 'r') as file:
+                b_code_txt = file.read()
+        else:
+            print(f"Le fichier {arg[3]}.txt n'existe pas.")
+            b_dumb_txt = recup_fichier_jdm(arg[3])
+                
+            # Extraction du deuxieme mot
+            b_code_txt = extraire_elements(b_dumb_txt,"<CODE>","</CODE>")
+            write_to_file(b_code_txt,f'{arg[3]}.txt')
+
 
         # Enregistrer le temps de début
         start_time = time.time()
-
-        with open('output/pizza.txt', 'r') as file:
-            a_dumb_txt = file.read()
-        with open('output/mozza.txt', 'r') as file:
-            b_dumb_txt = file.read()
-
-        # Extraction du premier mot
-        a_code_txt = extraire_elements(a_dumb_txt,"<CODE>","</CODE>")
-        # a_relation_sortante = extraire_elements(a_code_txt,"// les relations sortantes","// les relations entrantes")
-        # a_relation_entrante = extraire_elements(a_code_txt,"// les relations entrantes","// END")
-
-        write_to_file(a_dumb_txt,f'{arg[1]}.txt')
-        write_to_file(a_code_txt,f'{arg[1]}_code.txt')
-
-        # Extraction du deuxieme mot
-        b_code_txt = extraire_elements(b_dumb_txt,"<CODE>","</CODE>")
-        # b_relation_sortante = extraire_elements(b_code_txt,"// les relations sortantes","// les relations entrantes")
-        # b_relation_entrante = extraire_elements(b_code_txt,"// les relations entrantes","// END")
-
-        write_to_file(b_dumb_txt,f'{arg[3]}.txt')
-        write_to_file(b_code_txt,f'{arg[3]}_code.txt')
         
         print(separation_label)
 
@@ -59,6 +65,8 @@ def main(arg):
             print(erreur_label +" La relation entrée n'existe pas")
             exit()
 
+
+        ## Direct relation
         print(separation_label) 
 
         print('Verifier si la relation direct existe dans jeudemots')
@@ -145,30 +153,3 @@ def main(arg):
 
 if __name__ == "__main__":
     main(sys.argv)
-
-
-
-
-
-
-# print(trouver_nombres_communs(b_voisins_sortant_transitivite,a_voisins_entrent_transitivite))
-
-# 113317 - paris
-
-# print(separation_label)
-# print(f'Trouver les voisins de "arg[1]"')
-# voisin1 = trouver_premiers_voisins(codetxt_1)
-
-# print(separation_label)
-# print(f'Trouver les voisins de "arg[2]"')
-# voisin2 = trouver_premiers_voisins(codetxt_2)
-
-# print(separation_label)
-# print(trouver_nombres_communs(voisin1,voisin2))
-
-
-# with open('output/matou_code.txt', 'r') as file:
-#     codetxt = file.read()
-
-# test = search_word_in_string(codetxt,arg[2])
-# print(test)

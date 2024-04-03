@@ -21,8 +21,11 @@ Jeuxdemots
 
 7 - Convertir nom en Mot (ok)
 
-8 - verifier la premiere relation ()
+8 - verifier la premiere relation (ok)
 
+9 - cache - ecrire dans le output la relation inféré pour garder en memoire
+
+10 - query si fichier non trouvé dans la cache
 
 
 ### Question
