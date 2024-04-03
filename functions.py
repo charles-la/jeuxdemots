@@ -65,8 +65,7 @@ def trouver_voisins(chaine,relation,id,deduction,sens):
     # Séparer la chaîne en lignes
     lignes = chaine.split('\n')
 
-    # Initialiser une liste pour stocker les quatrièmes éléments
-    quatriemes_elements = []
+    voisin = []
 
     # Parcourir chaque ligne, extraire le noeud different du id et l'ajouter à la liste
     for ligne in lignes:
@@ -75,17 +74,17 @@ def trouver_voisins(chaine,relation,id,deduction,sens):
 
             if((int(elements[4]) == relation) and len(elements)==8):
                 if(int(elements[3]) == id and (sens == 'e' or sens == 'es')): # Relation Entrante
-                    quatriemes_elements.append((int(elements[2]), int(elements[7]),deduction))
+                    voisin.append((int(elements[2]), int(elements[7]),deduction))
                 if(int(elements[2]) == id and (sens == 's' or sens == 'es')): # Relation Sortante
-                    quatriemes_elements.append((int(elements[3]), int(elements[7]),deduction))
+                    voisin.append((int(elements[3]), int(elements[7]),deduction))
 
             if((int(elements[4]) == relation) and len(elements)!=8):
                 if(int(elements[3]) == id and (sens == 'e' or sens == 'es')): # Relation Entrante
-                    quatriemes_elements.append((int(elements[2]),None,deduction))
+                    voisin.append((int(elements[2]),None,deduction))
                 if(int(elements[2]) == id and (sens == 's' or sens == 'es')): # Relation Sortante
-                    quatriemes_elements.append((int(elements[3]),None,deduction))
+                    voisin.append((int(elements[3]),None,deduction))
 
-    return quatriemes_elements
+    return voisin
 
 def trouver_nom(chaine, eid):
 
@@ -129,3 +128,17 @@ def trouver_voisin_important(c_voisins):
         c_voisins_important = c_voisins_tries[0]
     
     return c_voisins_important
+
+def trouver_une_relation_direct(chaine,eid1,eid2,relation):
+     # Séparer la chaîne en lignes
+    lignes = chaine.split('\n')
+
+    relation_direct = False
+
+    for ligne in lignes:
+        if ligne.startswith("r;"):
+            elements = ligne.strip().split(';')
+            if int(elements[2]) == eid1 and int(elements[3]) == eid2 and int(elements[4]) == relation:
+               relation_direct = True
+
+    return relation_direct

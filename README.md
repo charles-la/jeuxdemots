@@ -19,7 +19,9 @@ Jeuxdemots
 
 6 - Calculer le poid des liens
 
-7 - Convertir nom en Mot
+7 - Convertir nom en Mot (ok)
+
+8 - verifier la premiere relation ()
 
 
 
@@ -31,6 +33,9 @@ Jeuxdemots
 
 - Quel relation pour la transitivite
 - R_agent_1 -- deduction et induction
+
+- Memoriser les inférences ()
+
 
 
 

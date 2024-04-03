@@ -16,17 +16,17 @@ def main(arg):
     print(separation_label)
     
     if len(sys.argv) >= 4:
-        remove_all_files_in_folder('output/')
-        a_dumb_txt = recup_fichier_jdm(arg[1])
-        b_dumb_txt = recup_fichier_jdm(arg[3])
+        # remove_all_files_in_folder('output/')
+        # a_dumb_txt = recup_fichier_jdm(arg[1])
+        # b_dumb_txt = recup_fichier_jdm(arg[3])
 
         # Enregistrer le temps de début
         start_time = time.time()
 
-        # with open('output/piston.txt', 'r') as file:
-        #     a_dumb_txt = file.read()
-        # with open('output/voiture.txt', 'r') as file:
-        #     b_dumb_txt = file.read()
+        with open('output/pizza.txt', 'r') as file:
+            a_dumb_txt = file.read()
+        with open('output/mozza.txt', 'r') as file:
+            b_dumb_txt = file.read()
 
         # Extraction du premier mot
         a_code_txt = extraire_elements(a_dumb_txt,"<CODE>","</CODE>")
@@ -58,6 +58,19 @@ def main(arg):
         else:
             print(erreur_label +" La relation entrée n'existe pas")
             exit()
+
+        print(separation_label) 
+
+        print('Verifier si la relation direct existe dans jeudemots')
+        
+        relation_direct = trouver_une_relation_direct(a_code_txt,a_id,b_id,num_relation)
+
+        if relation_direct == True:
+            return print(f"La relation {arg[1]} {arg[2]} {arg[3]} existe dans jeudemots")
+
+        print(f"La relation {arg[1]} {arg[2]} {arg[3]} n'existe pas dans jeudemots")    
+        
+
 
         print(separation_label)
 
@@ -107,6 +120,7 @@ def main(arg):
         
         # Affichage des resultats
         print('Resultat')
+        ## afficher les 10 premieres inference
         if(c_voisins_important != None):
             c_name = trouver_nom(a_code_txt,c_voisins_important[0])
             if(c_voisins_important[2]=='Transitivity'):
