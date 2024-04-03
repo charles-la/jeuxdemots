@@ -126,9 +126,11 @@ def main(arg):
         
         print(separation_label)
         
+        ## afficher les 10 premieres inference
+        ## Apres afficher linference principal
+
         # Affichage des resultats
         print('Resultat')
-        ## afficher les 10 premieres inference
         if(c_voisins_important != None):
             c_name = trouver_nom(a_code_txt,c_voisins_important[0])
             if(c_voisins_important[2]=='Transitivity'):
