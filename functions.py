@@ -3,6 +3,7 @@ import re
 import requests
 import os
 import numpy as np
+from dictionnary import *
 
 def recup_fichier_jdm(terme):
 
@@ -46,6 +47,11 @@ def remove_all_files_in_folder(folder_path):
             print(f'Remove ---> {element_path}')
             os.remove(element_path)
 
+def find_key_by_value(dict, value_to_find):
+    for key, value in dict.items():
+        if value == value_to_find:
+            return key
+    return None
 
 def extraire_elements(text,debut,fin):
     pattern = f"{debut}(.*?){fin}"
@@ -72,17 +78,19 @@ def trouver_voisins(chaine,relation,id,deduction,sens):
         if ligne.startswith("r;"):
             elements = ligne.strip().split(';')
 
-            if((int(elements[4]) == relation) and len(elements)==8):
+            if((int(elements[4]) == relation)): #and len(elements)==8        
+                relation_name = find_key_by_value(tableau_correspondance_relation, int(elements[4]))
                 if(int(elements[3]) == id and (sens == 'e' or sens == 'es')): # Relation Entrante
-                    voisin.append((int(elements[2]), int(elements[7]),deduction))
+                    voisin.append((int(elements[2]), int(elements[5]),deduction,relation_name))
                 if(int(elements[2]) == id and (sens == 's' or sens == 'es')): # Relation Sortante
-                    voisin.append((int(elements[3]), int(elements[7]),deduction))
+                    voisin.append((int(elements[3]), int(elements[5]),deduction,relation_name))
 
-            if((int(elements[4]) == relation) and len(elements)!=8):
+            if(relation == "All" and int(elements[4]) != 6):
+                relation_name = find_key_by_value(tableau_correspondance_relation, int(elements[4]))
                 if(int(elements[3]) == id and (sens == 'e' or sens == 'es')): # Relation Entrante
-                    voisin.append((int(elements[2]),None,deduction))
+                    voisin.append((int(elements[2]), int(elements[5]),deduction,relation_name))
                 if(int(elements[2]) == id and (sens == 's' or sens == 'es')): # Relation Sortante
-                    voisin.append((int(elements[3]),None,deduction))
+                    voisin.append((int(elements[3]), int(elements[5]),deduction,relation_name))
 
     return voisin
 
@@ -93,13 +101,19 @@ def trouver_nom(chaine, eid):
 
     name = ''
 
+    # Regex pattern to match numbers [0-9] and symbols (non-alphanumeric characters)
+    pattern = '[0-9\W_]+'
+
     for ligne in lignes:
         if ligne.startswith("e;"):
             elements = ligne.strip().split(';')
             if int(elements[1]) == eid:
                name = elements[2]
 
-    return name
+    # Replace the matched patterns with an empty string (remove them)
+    clean_name = re.sub(pattern, '', name)
+
+    return clean_name
 
 
 def trouver_voisins_communs(liste1, liste2):
@@ -113,7 +127,7 @@ def trouver_voisins_communs(liste1, liste2):
             if tuple1[0] == tuple2[0]:
                 poids = np.sqrt((tuple1[1] if tuple1[1] is not None else 0)**2 + 
                                 (tuple2[1] if tuple2[1] is not None else 0)**2)
-                tuples_associes.append((tuple1[0],poids,tuple1[2]))
+                tuples_associes.append((tuple1[0],poids,tuple1[2],tuple1[3],tuple2[3]))
 
     return tuples_associes
 
@@ -121,13 +135,8 @@ def trouver_voisins_communs(liste1, liste2):
 def trouver_voisin_important(c_voisins):
     # Trier les triplets en fonction du deuxième élément
     c_voisins_tries = sorted(filter(lambda x: x[1] != 0, c_voisins), key=lambda x: x[1])
-    c_voisins_important = None
     
-    # Sélectionner le deuxième triplet de la liste triée
-    if len(c_voisins_tries) != 0:
-        c_voisins_important = c_voisins_tries[0]
-    
-    return c_voisins_important
+    return c_voisins_tries
 
 def trouver_une_relation_direct(chaine,eid1,eid2,relation):
      # Séparer la chaîne en lignes

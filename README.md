@@ -2,6 +2,9 @@
 
 ## Test 
 
+
+## HOW TO USE
+
 python3 __main__.py matou r_agent-1 griffer 
 
 
@@ -13,19 +16,19 @@ Jeuxdemots
     
 3 - tableau de correspondance (ok)
     
-4 - faire deduction (Transitivité (en cours), Induction, Déduction)
+4 - faire deduction (Transitivité (ok), Induction (ok), Déduction(ok))
     
 5 - type de requete : (ok)
 
-6 - Calculer le poid des liens
+6 - Calculer le poid des liens (verifier avec W)
 
 7 - Convertir nom en Mot (ok)
 
 8 - verifier la premiere relation (ok)
 
-9 - cache - ecrire dans le output la relation inféré pour garder en memoire
+9 - cache - ecrire dans le output la relation inféré pour garder en memoire 
 
-10 - query si fichier non trouvé dans la cache
+10 - query si fichier non trouvé dans la cache (ok)
 
 
 ### Question
