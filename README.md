@@ -5,7 +5,8 @@
 
 ## HOW TO USE
 
-python3 __main__.py matou r_agent-1 griffer 
+python __main__.py matou r_agent-1 griffer  ## deduction
+python __main__.py pigeon r_agent-1 voler   ## deduction
 
 
 Jeuxdemots

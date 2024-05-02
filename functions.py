@@ -27,7 +27,7 @@ def recup_fichier_jdm(terme):
 # write file in the repo
 def write_to_file(data, filename):
     filename = 'output/'+filename
-    with open(filename, 'w') as file:
+    with open(filename, 'w', encoding='utf-8') as file:
         print(f'Create file ---> {filename}')
         file.write(data)
 
@@ -78,19 +78,13 @@ def trouver_voisins(chaine,relation,id,deduction,sens):
         if ligne.startswith("r;"):
             elements = ligne.strip().split(';')
 
-            if((int(elements[4]) == relation)): #and len(elements)==8        
+            if((int(elements[4]) == relation) and int(elements[5])>=0):   
                 relation_name = find_key_by_value(tableau_correspondance_relation, int(elements[4]))
-                if(int(elements[3]) == id and (sens == 'e' or sens == 'es')): # Relation Entrante
-                    voisin.append((int(elements[2]), int(elements[5]),deduction,relation_name))
-                if(int(elements[2]) == id and (sens == 's' or sens == 'es')): # Relation Sortante
-                    voisin.append((int(elements[3]), int(elements[5]),deduction,relation_name))
 
-            if(relation == "All" and int(elements[4]) != 6):
-                relation_name = find_key_by_value(tableau_correspondance_relation, int(elements[4]))
-                if(int(elements[3]) == id and (sens == 'e' or sens == 'es')): # Relation Entrante
-                    voisin.append((int(elements[2]), int(elements[5]),deduction,relation_name))
-                if(int(elements[2]) == id and (sens == 's' or sens == 'es')): # Relation Sortante
-                    voisin.append((int(elements[3]), int(elements[5]),deduction,relation_name))
+                if(int(elements[3]) == id and sens == 'e'): # Relation Entrante
+                    voisin.append((int(elements[2]),deduction,relation_name))
+                if(int(elements[2]) == id and sens == 's'): # Relation Sortante
+                    voisin.append((int(elements[3]),deduction,relation_name))
 
     return voisin
 
@@ -116,18 +110,31 @@ def trouver_nom(chaine, eid):
     return clean_name
 
 
+# def trouver_voisins_communs(liste1, liste2):
+#     # Initialiser une liste pour stocker les nombres communs
+#     tuples_associes = []
+
+#     # Parcourir les tuples de la première liste
+#     for tuple1 in liste1:
+#         # Vérifier si le nombre est présent dans les tuples de la deuxième liste
+#         for tuple2 in liste2:
+#             if tuple1[0] == tuple2[0]:
+#                 tuples_associes.append((tuple1[0],tuple1[1],tuple1[2],tuple2[2]))
+
+#     return tuples_associes
+
 def trouver_voisins_communs(liste1, liste2):
-    # Initialiser une liste pour stocker les nombres communs
+    # Créer un dictionnaire pour la deuxième liste pour un accès rapide
+    dict2 = {tuple2[0]: tuple2[2] for tuple2 in liste2}
+
+    # Initialiser une liste pour stocker les tuples associés
     tuples_associes = []
 
     # Parcourir les tuples de la première liste
     for tuple1 in liste1:
-        # Vérifier si le nombre est présent dans les tuples de la deuxième liste
-        for tuple2 in liste2:
-            if tuple1[0] == tuple2[0]:
-                poids = np.sqrt((tuple1[1] if tuple1[1] is not None else 0)**2 + 
-                                (tuple2[1] if tuple2[1] is not None else 0)**2)
-                tuples_associes.append((tuple1[0],poids,tuple1[2],tuple1[3],tuple2[3]))
+        # Vérifier si le nombre est présent dans le dictionnaire créé à partir de la deuxième liste
+        if tuple1[0] in dict2:
+            tuples_associes.append((tuple1[0], tuple1[1], tuple1[2], dict2[tuple1[0]]))
 
     return tuples_associes
 

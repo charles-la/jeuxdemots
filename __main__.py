@@ -9,6 +9,7 @@ from functions import *
 
 separation_label = "---------------------------------------------------------------------------------------------------------------"
 erreur_label = "-----> ERREUR ----->"
+end_time = 0
 
 def main(arg):
 
@@ -25,7 +26,7 @@ def main(arg):
 
         if os.path.exists(chemin_arg1):
             print(f"Le fichier {arg[1]}.txt existe.")
-            with open(chemin_arg1, 'r') as file:
+            with open(chemin_arg1, 'r', encoding='utf-8') as file:
                 a_code_txt = file.read()
         else:
             print("Le fichier n'existe pas.")
@@ -38,7 +39,7 @@ def main(arg):
 
         if os.path.exists(chemin_arg3):
             print(f"Le fichier {arg[3]}.txt existe.")
-            with open(chemin_arg3, 'r') as file:
+            with open(chemin_arg3, 'r', encoding='utf-8') as file:
                 b_code_txt = file.read()
         else:
             print(f"Le fichier {arg[3]}.txt n'existe pas.")
@@ -79,7 +80,6 @@ def main(arg):
 
         # print(f"La relation {arg[1]} {arg[2]} {arg[3]} n'existe pas dans jeudemots")    
         
-
         print(separation_label)
         
         c_voisins = []
@@ -87,8 +87,8 @@ def main(arg):
         ## TRANSITIVITE
         print('Transitivity')
         # si la relation est r-agent-1, on regarde la transitivite
-        a_voisins = trouver_voisins(a_code_txt,num_relation,a_id,'Transitivity','es')
-        b_voisins = trouver_voisins(b_code_txt,num_relation,b_id,'Transitivity','es')   
+        a_voisins = trouver_voisins(a_code_txt,num_relation,a_id,'Transitivity','s')
+        b_voisins = trouver_voisins(b_code_txt,num_relation,b_id,'Transitivity','e')   
         c_voisin_temp = trouver_voisins_communs(a_voisins,b_voisins)
         print(f'{c_voisin_temp[0:2]} ..... {len(c_voisin_temp)} inferences')
         c_voisins += c_voisin_temp
@@ -97,7 +97,7 @@ def main(arg):
 
         ## INDUCTION
         print('Induction')
-        a_voisins = trouver_voisins(a_code_txt,'All',a_id,'Induction','s')
+        a_voisins = trouver_voisins(a_code_txt,8,a_id,'Induction','s')
         b_voisins = trouver_voisins(b_code_txt,num_relation,b_id,'Induction','e')   
         c_voisin_temp = trouver_voisins_communs(a_voisins,b_voisins)
         print(f'{c_voisin_temp[0:2]} ..... {len(c_voisin_temp)} inferences')
@@ -113,58 +113,56 @@ def main(arg):
         c_voisin_temp = trouver_voisins_communs(a_voisins,b_voisins)
         print(f'{c_voisin_temp[0:2]} ..... {len(c_voisin_temp)} inferences')
         c_voisins += c_voisin_temp
+    
+        # Enregistrer le temps de fin
+        end_time = time.time()
 
-        ## afficher les 10 premieres inference
-        c_voisins_important_ordre = trouver_voisin_important(c_voisins)
-        c_voisins_important = []
-        
-        # Affichage des resultats
+        # Affichage des resultats - 10 premieres inferences
         print(separation_label)
         print('Resultat - 10 principales inferences')
-        if(c_voisins_important_ordre != None and len(c_voisins_important_ordre) > 0):
-            
-            num_inference = len(c_voisins_important_ordre)
+        if(c_voisins != None and len(c_voisins) > 0):
+
+            num_inference = len(c_voisins)
             if(num_inference >= 10):
                 num_inference = 10
 
             for i in range(num_inference):
                 ## Apres afficher linference principal
-                c_voisins_important = c_voisins_important_ordre[i]            
-                c_name = trouver_nom(a_code_txt,c_voisins_important[0])
+                c_voisins_i = c_voisins[i]            
+                c_name = trouver_nom(a_code_txt,c_voisins_i[0])
 
-                if(c_voisins_important[2]=='Transitivity'):
+                if(c_voisins_i[1]=='Transitivity'):
                     print(f'{i+1} : \'{arg[1]}\' {arg[2]} \'{arg[3]}\' --> oui, car par transitivite \'{arg[1]}\' {arg[2]} \'{c_name}\' et \'{c_name}\' {arg[2]} \'{arg[3]}\'')
-                if(c_voisins_important[2]=='Deduction'):
+                if(c_voisins_i[1]=='Deduction'):
                     print(f'{i+1} : \'{arg[1]}\' {arg[2]} \'{arg[3]}\' --> oui, car par deduction \'{arg[1]}\' r_isa \'{c_name}\' et \'{c_name}\' {arg[2]} \'{arg[3]}\'')      
-                if(c_voisins_important[2]=='Induction'):
-                    print(f'{i+1} : \'{arg[1]}\' {arg[2]} \'{arg[3]}\' --> oui, car par induction \'{arg[1]}\' {c_voisins_important[3]} \'{c_name}\' et \'{c_name}\' {arg[2]} \'{arg[3]}\'')
-
+                if(c_voisins_i[1]=='Induction'):
+                    print(f'{i+1} : \'{arg[1]}\' {arg[2]} \'{arg[3]}\' --> oui, car par induction \'{arg[1]}\' r_hypo \'{c_name}\' et \'{c_name}\' {arg[2]} \'{arg[3]}\'')
 
             # Add the inference in the code
             # r;rid;node1;node2;type;w;w_normed;rank
             
             # relation a vers b (sortante)
-            inferrence_to_add_1 = '\n' + f'r;null;{a_id};{b_id};{num_relation};{int(round(c_voisins_important[1]))}' 
+            inferrence_to_add_1 = '\n' + f'r;null;{a_id};{b_id};{num_relation};{10}' 
             
             # relation a vers b (entrante)
-            inferrence_to_add_2 = '\n' + f'r;null;{b_id};{a_id};{num_relation};{int(round(c_voisins_important[1]))}'
+            inferrence_to_add_2 = '\n' + f'r;null;{b_id};{a_id};{num_relation};{10}'
             
-            with open(chemin_arg1, 'a') as file:
+            with open(chemin_arg1, 'a', encoding='utf-8') as file:
                 file.write(inferrence_to_add_1)
 
-            with open(chemin_arg3, 'a') as file:
+            with open(chemin_arg3, 'a', encoding='utf-8') as file:
                 file.write(inferrence_to_add_2)
 
         else:
             print(f'\'{arg[1]}\' {arg[2]} \'{arg[3]}\' --> non')
-        print(separation_label)
-
-    # Enregistrer le temps de fin
-    end_time = time.time()
+    
+    print(separation_label)
 
     # Calculer la durée d'exécution
     execution_time = end_time - start_time
     print("Temps d'exécution:", execution_time, "secondes")
+
+    print(separation_label)
 
 
 if __name__ == "__main__":
