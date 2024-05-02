@@ -16,9 +16,9 @@ def main(arg):
     print(separation_label)
     print(f'Voici vos arguments : {arg}')
     print(separation_label)
-    
+
     if len(sys.argv) >= 4:
-        
+
         # remove_all_files_in_folder('output/') #### Supprimer cache
         
         chemin_arg1 = f"output/{arg[1]}.txt"
@@ -48,7 +48,6 @@ def main(arg):
             # Extraction du deuxieme mot
             b_code_txt = extraire_elements(b_dumb_txt,"<CODE>","</CODE>")
             write_to_file(b_code_txt,f'{arg[3]}.txt')
-
 
         # Enregistrer le temps de début
         start_time = time.time()
@@ -88,7 +87,7 @@ def main(arg):
         print('Transitivity')
         # si la relation est r-agent-1, on regarde la transitivite
         a_voisins = trouver_voisins(a_code_txt,num_relation,a_id,'Transitivity','s')
-        b_voisins = trouver_voisins(b_code_txt,num_relation,b_id,'Transitivity','e')   
+        b_voisins = trouver_voisins(b_code_txt,num_relation,b_id,'All','e')   
         c_voisin_temp = trouver_voisins_communs(a_voisins,b_voisins)
         print(f'{c_voisin_temp[0:2]} ..... {len(c_voisin_temp)} inferences')
         c_voisins += c_voisin_temp
@@ -98,7 +97,7 @@ def main(arg):
         ## INDUCTION
         print('Induction')
         a_voisins = trouver_voisins(a_code_txt,8,a_id,'Induction','s')
-        b_voisins = trouver_voisins(b_code_txt,num_relation,b_id,'Induction','e')   
+        # b_voisins = trouver_voisins(b_code_txt,num_relation,b_id,'Induction','e')   
         c_voisin_temp = trouver_voisins_communs(a_voisins,b_voisins)
         print(f'{c_voisin_temp[0:2]} ..... {len(c_voisin_temp)} inferences')
         c_voisins += c_voisin_temp
@@ -109,7 +108,7 @@ def main(arg):
         print('Deduction')
         # le numero de la relation r_isa = 6
         a_voisins = trouver_voisins(a_code_txt,6,a_id,'Deduction','s')
-        b_voisins = trouver_voisins(b_code_txt,num_relation,b_id,'Deduction','e')   
+        # b_voisins = trouver_voisins(b_code_txt,num_relation,b_id,'Deduction','e')   
         c_voisin_temp = trouver_voisins_communs(a_voisins,b_voisins)
         print(f'{c_voisin_temp[0:2]} ..... {len(c_voisin_temp)} inferences')
         c_voisins += c_voisin_temp
@@ -156,13 +155,13 @@ def main(arg):
         else:
             print(f'\'{arg[1]}\' {arg[2]} \'{arg[3]}\' --> non')
     
-    print(separation_label)
+        print(separation_label)
 
-    # Calculer la durée d'exécution
-    execution_time = end_time - start_time
-    print("Temps d'exécution:", execution_time, "secondes")
+        # Calculer la durée d'exécution
+        execution_time = end_time - start_time
+        print("Temps d'exécution:", execution_time, "secondes")
 
-    print(separation_label)
+        print(separation_label)
 
 
 if __name__ == "__main__":

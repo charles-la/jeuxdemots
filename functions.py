@@ -78,7 +78,7 @@ def trouver_voisins(chaine,relation,id,deduction,sens):
         if ligne.startswith("r;"):
             elements = ligne.strip().split(';')
 
-            if((int(elements[4]) == relation) and int(elements[5])>=0):   
+            if((int(elements[4]) == relation) and int(elements[5]) >= 0):   
                 relation_name = find_key_by_value(tableau_correspondance_relation, int(elements[4]))
 
                 if(int(elements[3]) == id and sens == 'e'): # Relation Entrante
