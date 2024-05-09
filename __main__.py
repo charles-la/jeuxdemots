@@ -96,7 +96,7 @@ def main(arg):
 
         ## INDUCTION
         print('Induction')
-        a_voisins = trouver_voisins(a_code_txt,8,a_id,'Induction','s')
+        a_voisins = trouver_voisins(a_code_txt,6,a_id,'Induction','e')
         # b_voisins = trouver_voisins(b_code_txt,num_relation,b_id,'Induction','e')   
         c_voisin_temp = trouver_voisins_communs(a_voisins,b_voisins)
         print(f'{c_voisin_temp[0:2]} ..... {len(c_voisin_temp)} inferences')
