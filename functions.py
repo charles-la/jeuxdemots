@@ -105,23 +105,10 @@ def trouver_nom(chaine, eid):
                name = elements[2]
 
     # Replace the matched patterns with an empty string (remove them)
-    clean_name = re.sub(pattern, '', name)
+    # name = re.sub(pattern, '', name)
 
-    return clean_name
+    return name
 
-
-# def trouver_voisins_communs(liste1, liste2):
-#     # Initialiser une liste pour stocker les nombres communs
-#     tuples_associes = []
-
-#     # Parcourir les tuples de la première liste
-#     for tuple1 in liste1:
-#         # Vérifier si le nombre est présent dans les tuples de la deuxième liste
-#         for tuple2 in liste2:
-#             if tuple1[0] == tuple2[0]:
-#                 tuples_associes.append((tuple1[0],tuple1[1],tuple1[2],tuple2[2]))
-
-#     return tuples_associes
 
 def trouver_voisins_communs(liste1, liste2):
     # Créer un dictionnaire pour la deuxième liste pour un accès rapide
